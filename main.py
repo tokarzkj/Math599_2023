@@ -1,5 +1,5 @@
 import numpy as np
-
+import matplotlib.pyplot as plt
 
 def cosine_samples(f, N) -> np.array:
     """
@@ -83,5 +83,15 @@ if __name__ == '__main__':
     idft_cos_signal = inverse_dft_transform(cos_frequency)
     idft_sin_signal = inverse_dft_transform(sin_frequency)
 
+    x = list(range(N))
+
+    fig, (ax1, ax2) = plt.subplots(2, 2)
+    ax1[0].stem(x, cos_signal)
+    ax1[1].stem(x, sin_signal)
+
+    ax2[0].stem(x, cos_frequency)
+    ax2[1].stem(x, sin_frequency)
+
+    plt.show()
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
