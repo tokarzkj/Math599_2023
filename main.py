@@ -88,8 +88,10 @@ if __name__ == '__main__':
 
     x = list(range(N))
 
-    fig, (ax1, ax2) = plt.subplots(2, 2)
+    fig, (ax1, ax2) = plt.subplots(2, 4)
     fig.subplots_adjust(wspace=0.5, hspace=0.75)
+    fig.set_figheight(7)
+    fig.set_figwidth(10)
 
     ax1[0].set_ylabel('Signal')
     ax1[0].set_xlabel('Sample')
@@ -100,6 +102,16 @@ if __name__ == '__main__':
     ax1[1].set_xlabel('Sample')
     ax1[1].set_title('Sine Signal')
     ax1[1].stem(x, sin_signal)
+
+    ax1[2].set_ylabel('Signal')
+    ax1[2].set_xlabel('Sample')
+    ax1[2].set_title('IDFT Cosine Signal')
+    ax1[2].stem(x, idft_cos_signal)
+
+    ax1[3].set_ylabel('Frequency')
+    ax1[3].set_xlabel('Sample')
+    ax1[3].set_title('IDFT Sine Signal')
+    ax1[3].stem(x, idft_sin_signal)
 
     ax2[0].set_ylabel('Frequency')
     ax2[0].set_xlabel('Sample')
