@@ -24,7 +24,7 @@ def sin_samples(f, N) -> np.array:
     """
     signal_vector_results = np.empty((N, 1))
     for n in range(0, N):
-        signal_vector_results[n] = np.sin(2 * np.pi * f * n)
+        signal_vector_results[n] = np.sin((2 * np.pi * f * n)/N)
 
     return signal_vector_results
 
@@ -72,8 +72,11 @@ def inverse_dft_transform(frequency) -> np.array:
 
 
 if __name__ == '__main__':
-    f = 1
-    N = 8
+    print("Please select an integer f:")
+    f = int(input())
+    print("Please select a non-negative integer N")
+    N = int(input())
+
     cos_signal = cosine_samples(f, N)
     sin_signal = sin_samples(f, N)
 
@@ -86,10 +89,26 @@ if __name__ == '__main__':
     x = list(range(N))
 
     fig, (ax1, ax2) = plt.subplots(2, 2)
+    fig.subplots_adjust(wspace=0.5, hspace=0.75)
+
+    ax1[0].set_ylabel('Signal')
+    ax1[0].set_xlabel('Sample')
+    ax1[0].set_title('Cosine Signal')
     ax1[0].stem(x, cos_signal)
+
+    ax1[1].set_ylabel('Signal')
+    ax1[1].set_xlabel('Sample')
+    ax1[1].set_title('Sine Signal')
     ax1[1].stem(x, sin_signal)
 
+    ax2[0].set_ylabel('Frequency')
+    ax2[0].set_xlabel('Sample')
+    ax2[0].set_title('Cosine Frequency')
     ax2[0].stem(x, cos_frequency)
+
+    ax2[1].set_ylabel('Frequency')
+    ax2[1].set_xlabel('Sample')
+    ax2[1].set_title('Sine Frequency')
     ax2[1].stem(x, sin_frequency)
 
     plt.show()
