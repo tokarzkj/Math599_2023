@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 def cosine_samples(f, N) -> np.array:
     """
     Calculates N-samples of a specific cosine signal
@@ -10,7 +11,7 @@ def cosine_samples(f, N) -> np.array:
     """
     signal_vector_results = np.empty((N, 1))
     for n in range(0, N):
-        signal_vector_results[n] = np.cos((2 * np.pi * f * n)/N)
+        signal_vector_results[n] = np.cos((2 * np.pi * f * n) / N)
 
     return signal_vector_results
 
@@ -24,9 +25,20 @@ def sin_samples(f, N) -> np.array:
     """
     signal_vector_results = np.empty((N, 1))
     for n in range(0, N):
-        signal_vector_results[n] = np.sin((2 * np.pi * f * n)/N)
+        signal_vector_results[n] = np.sin((2 * np.pi * f * n) / N)
 
     return signal_vector_results
+
+
+def box_signal_samples(N, M, u = 0) -> np.array:
+    samples = np.empty(N)
+    start = u
+    end = M + u
+
+    for n in range(start, end):
+        samples[n] = 1
+
+    return samples
 
 
 def dft_transform(signal) -> np.array:
@@ -65,8 +77,8 @@ def inverse_dft_transform(frequency) -> np.array:
         frequency_summation = np.float64(0)
         for n in range(0, N):
             frequency_sample = frequency[n]
-            frequency_summation += frequency_sample * np.exp((2 * np.pi * i * k * n)/N)
-        signal_samples[k] = np.float64((1/N) * frequency_summation)
+            frequency_summation += frequency_sample * np.exp((2 * np.pi * i * k * n) / N)
+        signal_samples[k] = np.float64((1 / N) * frequency_summation)
 
     return signal_samples
 
@@ -76,52 +88,109 @@ if __name__ == '__main__':
     f = int(input())
     print("Please select a non-negative integer N")
     N = int(input())
+    print("Please select a lower boundary u for the box signal")
+    u = int(input())
+
+    print("Please select an upper boundary M for the box signal (Must be less than N)")
+    M = int(input())
+
+    while M >= N:
+        print("Please select an upper boundary M for the box signal (Must be less than N)")
+        M = int(input())
 
     cos_signal = cosine_samples(f, N)
     sin_signal = sin_samples(f, N)
+    simple_box_signal = box_signal_samples(N, M)
+    shifted_box_signal = box_signal_samples(N, M, u)
 
     cos_frequency = dft_transform(cos_signal)
     sin_frequency = dft_transform(sin_signal)
+    simple_box_frequency = dft_transform(simple_box_signal)
+    shifted_box_frequency = dft_transform(shifted_box_signal)
 
     idft_cos_signal = inverse_dft_transform(cos_frequency)
     idft_sin_signal = inverse_dft_transform(sin_frequency)
+    idft_simple_box_signal = inverse_dft_transform(simple_box_frequency)
+    idft_shifted_box_signal = inverse_dft_transform(shifted_box_frequency)
 
     x = list(range(N))
 
-    fig, (ax1, ax2) = plt.subplots(2, 4)
+    fig, (ax1, ax2, ax3, ax4) = plt.subplots(4, 3)
     fig.subplots_adjust(wspace=0.5, hspace=0.75)
-    fig.set_figheight(7)
+    fig.set_figheight(8.5)
     fig.set_figwidth(10)
 
+####################################################################
+# Create the Cosine plots                                          #
+####################################################################
     ax1[0].set_ylabel('Signal')
     ax1[0].set_xlabel('Sample')
     ax1[0].set_title('Cosine Signal')
     ax1[0].stem(x, cos_signal)
 
-    ax1[1].set_ylabel('Signal')
+    ax1[1].set_ylabel('Frequency')
     ax1[1].set_xlabel('Sample')
-    ax1[1].set_title('Sine Signal')
-    ax1[1].stem(x, sin_signal)
+    ax1[1].set_title('Cosine Frequency')
+    ax1[1].stem(x, cos_frequency)
 
     ax1[2].set_ylabel('Signal')
     ax1[2].set_xlabel('Sample')
     ax1[2].set_title('IDFT Cosine Signal')
     ax1[2].stem(x, idft_cos_signal)
 
-    ax1[3].set_ylabel('Frequency')
-    ax1[3].set_xlabel('Sample')
-    ax1[3].set_title('IDFT Sine Signal')
-    ax1[3].stem(x, idft_sin_signal)
-
-    ax2[0].set_ylabel('Frequency')
+####################################################################
+# Create the Sine plots                                            #
+####################################################################
+    ax2[0].set_ylabel('Signal')
     ax2[0].set_xlabel('Sample')
-    ax2[0].set_title('Cosine Frequency')
-    ax2[0].stem(x, cos_frequency)
+    ax2[0].set_title('Sine Signal')
+    ax2[0].stem(x, sin_signal)
 
     ax2[1].set_ylabel('Frequency')
     ax2[1].set_xlabel('Sample')
     ax2[1].set_title('Sine Frequency')
     ax2[1].stem(x, sin_frequency)
+
+    ax2[2].set_ylabel('Frequency')
+    ax2[2].set_xlabel('Sample')
+    ax2[2].set_title('IDFT Sine Signal')
+    ax2[2].stem(x, idft_sin_signal)
+
+####################################################################
+# Create the Simple Box plots                                      #
+####################################################################
+    ax3[0].set_ylabel('Signal')
+    ax3[0].set_xlabel('Sample')
+    ax3[0].set_title('Simple Box Signal')
+    ax3[0].stem(x, simple_box_signal)
+
+    ax3[1].set_ylabel('Frequency')
+    ax3[1].set_xlabel('Sample')
+    ax3[1].set_title('Simple Box Frequency')
+    ax3[1].stem(x, simple_box_frequency)
+
+    ax3[2].set_ylabel('Signal')
+    ax3[2].set_xlabel('Sample')
+    ax3[2].set_title('IDFT Simple Box Signal')
+    ax3[2].stem(x, idft_simple_box_signal)
+
+####################################################################
+# Create the Shifted Box plots                                     #
+####################################################################
+    ax4[0].set_ylabel('Signal')
+    ax4[0].set_xlabel('Sample')
+    ax4[0].set_title('Shifted Box Signal')
+    ax4[0].stem(x, shifted_box_signal)
+
+    ax4[1].set_ylabel('Frequency')
+    ax4[1].set_xlabel('Sample')
+    ax4[1].set_title('Shifted Box Frequency')
+    ax4[1].stem(x, shifted_box_frequency)
+
+    ax4[2].set_ylabel('Signal')
+    ax4[2].set_xlabel('Sample')
+    ax4[2].set_title('IDFT Shifted Box Signal')
+    ax4[2].stem(x, idft_shifted_box_signal)
 
     plt.show()
 
