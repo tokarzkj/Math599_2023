@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from numpy import real, imag
 
 
 def cosine_samples(f, N) -> np.array:
@@ -115,10 +116,10 @@ if __name__ == '__main__':
 
     x = list(range(N))
 
-    fig, (ax1, ax2, ax3, ax4) = plt.subplots(4, 3)
+    fig, (ax1, ax2, ax3, ax4) = plt.subplots(4, 4)
     fig.subplots_adjust(wspace=0.5, hspace=0.75)
-    fig.set_figheight(8.5)
-    fig.set_figwidth(10)
+    fig.set_figheight(9)
+    fig.set_figwidth(14)
 
 ####################################################################
 # Create the Cosine plots                                          #
@@ -130,13 +131,18 @@ if __name__ == '__main__':
 
     ax1[1].set_ylabel('Frequency')
     ax1[1].set_xlabel('Sample')
-    ax1[1].set_title('Cosine Frequency')
-    ax1[1].stem(x, cos_frequency)
+    ax1[1].set_title('Real Cosine Frequency')
+    ax1[1].stem(x, [real(r) for r in cos_frequency])
 
-    ax1[2].set_ylabel('Signal')
+    ax1[2].set_ylabel('Frequency')
     ax1[2].set_xlabel('Sample')
-    ax1[2].set_title('IDFT Cosine Signal')
-    ax1[2].stem(x, idft_cos_signal)
+    ax1[2].set_title('Imaginary Cosine Frequency')
+    ax1[2].stem(x, [imag(i) for i in cos_frequency])
+
+    ax1[3].set_ylabel('Signal')
+    ax1[3].set_xlabel('Sample')
+    ax1[3].set_title('IDFT Cosine Signal')
+    ax1[3].stem(x, idft_cos_signal)
 
 ####################################################################
 # Create the Sine plots                                            #
@@ -148,13 +154,18 @@ if __name__ == '__main__':
 
     ax2[1].set_ylabel('Frequency')
     ax2[1].set_xlabel('Sample')
-    ax2[1].set_title('Sine Frequency')
-    ax2[1].stem(x, sin_frequency)
+    ax2[1].set_title('Real Sine Frequency')
+    ax2[1].stem(x, [real(r) for r in sin_frequency])
 
     ax2[2].set_ylabel('Frequency')
     ax2[2].set_xlabel('Sample')
-    ax2[2].set_title('IDFT Sine Signal')
-    ax2[2].stem(x, idft_sin_signal)
+    ax2[2].set_title('Imaginary Sine Frequency')
+    ax2[2].stem(x, [imag(i) for i in sin_frequency])
+
+    ax2[3].set_ylabel('Frequency')
+    ax2[3].set_xlabel('Sample')
+    ax2[3].set_title('IDFT Sine Signal')
+    ax2[3].stem(x, idft_sin_signal)
 
 ####################################################################
 # Create the Simple Box plots                                      #
@@ -166,13 +177,18 @@ if __name__ == '__main__':
 
     ax3[1].set_ylabel('Frequency')
     ax3[1].set_xlabel('Sample')
-    ax3[1].set_title('Simple Box Frequency')
-    ax3[1].stem(x, simple_box_frequency)
+    ax3[1].set_title('Real Simple Box Frequency')
+    ax3[1].stem(x, [real(r) for r in simple_box_frequency])
 
-    ax3[2].set_ylabel('Signal')
+    ax3[2].set_ylabel('Frequency')
     ax3[2].set_xlabel('Sample')
-    ax3[2].set_title('IDFT Simple Box Signal')
-    ax3[2].stem(x, idft_simple_box_signal)
+    ax3[2].set_title('Imaginary Simple Box Frequency')
+    ax3[2].stem(x, [imag(i) for i in simple_box_frequency])
+
+    ax3[3].set_ylabel('Signal')
+    ax3[3].set_xlabel('Sample')
+    ax3[3].set_title('IDFT Simple Box Signal')
+    ax3[3].stem(x, idft_simple_box_signal)
 
 ####################################################################
 # Create the Shifted Box plots                                     #
@@ -184,13 +200,18 @@ if __name__ == '__main__':
 
     ax4[1].set_ylabel('Frequency')
     ax4[1].set_xlabel('Sample')
-    ax4[1].set_title('Shifted Box Frequency')
-    ax4[1].stem(x, shifted_box_frequency)
+    ax4[1].set_title('Real Shifted Box Frequency')
+    ax4[1].stem(x, [real(r) for r in shifted_box_frequency])
 
-    ax4[2].set_ylabel('Signal')
+    ax4[2].set_ylabel('Frequency')
     ax4[2].set_xlabel('Sample')
-    ax4[2].set_title('IDFT Shifted Box Signal')
-    ax4[2].stem(x, idft_shifted_box_signal)
+    ax4[2].set_title('Imaginary Shifted Box Frequency')
+    ax4[2].stem(x, [imag(i) for i in shifted_box_frequency])
+
+    ax4[3].set_ylabel('Signal')
+    ax4[3].set_xlabel('Sample')
+    ax4[3].set_title('IDFT Shifted Box Signal')
+    ax4[3].stem(x, idft_shifted_box_signal)
 
     plt.show()
 
