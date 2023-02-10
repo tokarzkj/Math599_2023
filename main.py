@@ -25,9 +25,13 @@ if __name__ == '__main__':
     shifted_box_signal = sd.box_signal_samples(N, M, u)
 
     cos_frequency = dft.dft_transform(cos_signal)
+    conjugate_cos_frequency = dft.conjugate_signal_transform(cos_signal)
     sin_frequency = dft.dft_transform(sin_signal)
+    conjugate_sin_frequency = dft.conjugate_signal_transform(sin_signal)
     simple_box_frequency = dft.dft_transform(simple_box_signal)
+    conjugate_simple_box = dft.dft_transform(simple_box_signal)
     shifted_box_frequency = dft.dft_transform(shifted_box_signal)
+    conjugate_shifted_box = dft.dft_transform(shifted_box_signal)
 
     idft_cos_signal = dft.inverse_dft_transform(cos_frequency)
     idft_sin_signal = dft.inverse_dft_transform(sin_frequency)
@@ -36,7 +40,7 @@ if __name__ == '__main__':
 
     x = list(range(N))
 
-    fig, (ax1, ax2, ax3, ax4) = plt.subplots(4, 4)
+    fig, (ax1, ax2, ax3, ax4) = plt.subplots(4, 6)
     fig.subplots_adjust(wspace=0.5, hspace=0.75)
     fig.set_figheight(9)
     fig.set_figwidth(14)
@@ -64,6 +68,16 @@ if __name__ == '__main__':
     ax1[3].set_title('IDFT Cosine Signal')
     ax1[3].stem(x, idft_cos_signal)
 
+    ax1[4].set_ylabel('Signal')
+    ax1[4].set_xlabel('Sample')
+    ax1[4].set_title('Real Conjugate Cosine Signal')
+    ax1[4].stem(x, [real(r) for r in conjugate_cos_frequency])
+
+    ax1[5].set_ylabel('Signal')
+    ax1[5].set_xlabel('Sample')
+    ax1[5].set_title('Imag Conjugate Cosine Signal')
+    ax1[5].stem(x, [imag(i) for i in conjugate_cos_frequency])
+
 ####################################################################
 # Create the Sine plots                                            #
 ####################################################################
@@ -86,6 +100,16 @@ if __name__ == '__main__':
     ax2[3].set_xlabel('Sample')
     ax2[3].set_title('IDFT Sine Signal')
     ax2[3].stem(x, idft_sin_signal)
+
+    ax2[4].set_ylabel('Signal')
+    ax2[4].set_xlabel('Sample')
+    ax2[4].set_title('RealConjugate Sin')
+    ax2[4].stem(x, [real(r) for r in conjugate_sin_frequency])
+
+    ax2[5].set_ylabel('Signal')
+    ax2[5].set_xlabel('Sample')
+    ax2[5].set_title('Imag Conjugate Sin')
+    ax2[5].stem(x, [imag(i) for i in conjugate_sin_frequency])
 
 ####################################################################
 # Create the Simple Box plots                                      #
@@ -110,6 +134,16 @@ if __name__ == '__main__':
     ax3[3].set_title('IDFT Simple Box Signal')
     ax3[3].stem(x, idft_simple_box_signal)
 
+    ax3[4].set_ylabel('Signal')
+    ax3[4].set_xlabel('Sample')
+    ax3[4].set_title('Conjugate Simple Box')
+    ax3[4].stem(x, [real(r) for r in conjugate_simple_box])
+
+    ax3[5].set_ylabel('Signal')
+    ax3[5].set_xlabel('Sample')
+    ax3[5].set_title('Imag Conjugate Cosine Signal')
+    ax3[5].stem(x, [imag(i) for i in conjugate_simple_box])
+
 ####################################################################
 # Create the Shifted Box plots                                     #
 ####################################################################
@@ -133,6 +167,14 @@ if __name__ == '__main__':
     ax4[3].set_title('IDFT Shifted Box Signal')
     ax4[3].stem(x, idft_shifted_box_signal)
 
-    plt.show()
+    ax4[4].set_ylabel('Signal')
+    ax4[4].set_xlabel('Sample')
+    ax4[4].set_title('Conjugate Shifted')
+    ax4[4].stem(x, [real(r) for r in conjugate_shifted_box])
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    ax4[5].set_ylabel('Signal')
+    ax4[5].set_xlabel('Sample')
+    ax4[5].set_title('Imag Conjugate Shifted')
+    ax4[5].stem(x, [imag(i) for i in conjugate_shifted_box])
+
+    plt.show()

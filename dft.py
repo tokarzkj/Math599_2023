@@ -41,3 +41,13 @@ def inverse_dft_transform(frequency) -> np.array:
         signal_samples[k] = np.float64((1 / N) * frequency_summation)
 
     return signal_samples
+
+def conjugate_signal_transform(signal):
+    """
+    Uses the FT summation technique to recover the signal from a frequency. This method will calculate the conjugate
+    of your signal. Currently subject to some rounding errors when comparing to the original signal values.
+    :param frequency: N length vector containing samples of a frequency
+    :return: An N length vector of signal samples
+    """
+    conjugate_signal = np.conjugate(signal)
+    return dft_transform(conjugate_signal)
