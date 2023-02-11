@@ -6,3 +6,5 @@ if __name__ == '__main__':
 
     if command == "dft graph":
         commands.DftGraph()
+    elif command == "verify properties":
+        commands.verify_dft_properties()

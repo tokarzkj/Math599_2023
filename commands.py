@@ -12,7 +12,6 @@ def DftGraph():
     N = int(input())
     print("Please select a lower boundary u for the box signal")
     u = int(input())
-
     print("Please select an upper boundary M for the box signal (Must be less than N)")
     M = int(input())
 
@@ -26,13 +25,9 @@ def DftGraph():
     shifted_box_signal = sd.box_signal_samples(N, M, u)
 
     cos_frequency = dft.dft_transform(cos_signal)
-    conjugate_cos_frequency = dft.conjugate_signal_transform(cos_signal)
     sin_frequency = dft.dft_transform(sin_signal)
-    conjugate_sin_frequency = dft.conjugate_signal_transform(sin_signal)
     simple_box_frequency = dft.dft_transform(simple_box_signal)
-    conjugate_simple_box = dft.dft_transform(simple_box_signal)
     shifted_box_frequency = dft.dft_transform(shifted_box_signal)
-    conjugate_shifted_box = dft.dft_transform(shifted_box_signal)
 
     idft_cos_signal = dft.inverse_dft_transform(cos_frequency)
     idft_sin_signal = dft.inverse_dft_transform(sin_frequency)
@@ -137,5 +132,33 @@ def DftGraph():
     ax4[3].set_xlabel('Sample')
     ax4[3].set_title('IDFT Shifted Box Signal')
     ax4[3].stem(x, idft_shifted_box_signal)
+
+    plt.show()
+
+def verify_dft_properties():
+    print("Please select an integer k for the Kronecker Delta:")
+    k = int(input())
+    print("Please select a non-negative integer N")
+    N = int(input())
+
+    kronecker_delta = sd.kronecker_delta(k, N)
+    kd_freq = dft.dft_transform(kronecker_delta)
+
+    x = list(range(N))
+
+    fig, ax1 = plt.subplots(1, 2)
+    fig.subplots_adjust(left=0.05, right=0.95, top=0.90, bottom=0.1, wspace=0.5, hspace=0.75)
+    fig.set_figheight(9)
+    fig.set_figwidth(15)
+
+    ax1[0].set_ylabel('Signal')
+    ax1[0].set_xlabel('Sample')
+    ax1[0].set_title('Kronecker Delta Signal')
+    ax1[0].stem(x, kronecker_delta)
+
+    ax1[1].set_ylabel('Frequency')
+    ax1[1].set_xlabel('Sample')
+    ax1[1].set_title('Kronecker Delta Freq')
+    ax1[1].stem(x, kd_freq)
 
     plt.show()
