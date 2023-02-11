@@ -145,15 +145,24 @@ def verify_dft_properties():
     print("Please select a magnitude for the constance sequence")
     magnitude = int(input())
 
+    print("Please select an upper boundary M for the box signal (Must be less than N)")
+    M = int(input())
+
     kronecker_delta = sd.kronecker_delta(k, N)
     kd_freq = dft.dft_transform(kronecker_delta)
 
     constance_sequence = sd.constance_sequence(magnitude, N)
     cs_freq = dft.dft_transform(constance_sequence)
 
+    box_signal = sd.box_signal_samples(N, M)
+    box_freq = dft.dft_transform(box_signal)
+
+    reversed_box_signal = sd.reverse_signal(box_signal)
+    reversed_box_freq = dft.dft_transform(reversed_box_signal)
+
     x = list(range(N))
 
-    fig, (ax1, ax2) = plt.subplots(2, 2)
+    fig, (ax1, ax2, ax3, ax4) = plt.subplots(4, 3)
     fig.subplots_adjust(left=0.05, right=0.95, top=0.90, bottom=0.1, wspace=0.5, hspace=0.75)
     fig.set_figheight(9)
     fig.set_figwidth(15)
@@ -165,17 +174,57 @@ def verify_dft_properties():
 
     ax1[1].set_ylabel('Frequency')
     ax1[1].set_xlabel('Sample')
-    ax1[1].set_title('Kronecker Delta Freq')
-    ax1[1].stem(x, kd_freq)
+    ax1[1].set_title('Real(Kronecker Delta Freq)')
+    ax1[1].stem(x, [real(r) for r in kd_freq])
+
+    ax1[2].set_ylabel('Frequency')
+    ax1[2].set_xlabel('Sample')
+    ax1[2].set_title('Im(Kronecker Delta Freq)')
+    ax1[2].stem(x, [imag(i) for i in kd_freq])
 
     ax2[0].set_ylabel('Signal')
     ax2[0].set_xlabel('Sample')
-    ax2[0].set_title('Kronecker Delta Signal')
+    ax2[0].set_title('Constance Sequence Signal')
     ax2[0].stem(x, constance_sequence)
 
     ax2[1].set_ylabel('Frequency')
     ax2[1].set_xlabel('Sample')
-    ax2[1].set_title('Kronecker Delta Freq')
-    ax2[1].stem(x, cs_freq)
+    ax2[1].set_title('Real(Constance Sequence Freq)')
+    ax2[1].stem(x, [real(r) for r in cs_freq])
+
+    ax2[2].set_ylabel('Frequency')
+    ax2[2].set_xlabel('Sample')
+    ax2[2].set_title('Im(Constance Sequence Freq)')
+    ax2[2].stem(x, [imag(i) for i in cs_freq])
+
+    ax3[0].set_ylabel('Signal')
+    ax3[0].set_xlabel('Sample')
+    ax3[0].set_title('Box Signal')
+    ax3[0].stem(x, box_signal)
+
+    ax3[1].set_ylabel('Frequency')
+    ax3[1].set_xlabel('Sample')
+    ax3[1].set_title('Real(Box Freq)')
+    ax3[1].stem(x, [real(r) for r in box_freq])
+
+    ax3[2].set_ylabel('Frequency')
+    ax3[2].set_xlabel('Sample')
+    ax3[2].set_title('Im(Box Freq)')
+    ax3[2].stem(x, [imag(i) for i in box_freq])
+
+    ax4[0].set_ylabel('Signal')
+    ax4[0].set_xlabel('Sample')
+    ax4[0].set_title('Reversed Box Signal')
+    ax4[0].stem(x, reversed_box_signal)
+
+    ax4[1].set_ylabel('Frequency')
+    ax4[1].set_xlabel('Sample')
+    ax4[1].set_title('Real(Reversed Box Freq)')
+    ax4[1].stem(x, [real(r) for r in reversed_box_freq])
+
+    ax4[2].set_ylabel('Frequency')
+    ax4[2].set_xlabel('Sample')
+    ax4[2].set_title('Im(Reversed Box Freq)')
+    ax4[2].stem(x, [imag(i) for i in reversed_box_freq])
 
     plt.show()
