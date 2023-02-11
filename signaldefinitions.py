@@ -58,3 +58,7 @@ def kronecker_delta(k, N):
     samples = np.zeros(N)
     samples[k] = 1
     return samples
+
+
+def constance_sequence(magnitude, N):
+    return np.full(N, magnitude)

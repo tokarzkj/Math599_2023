@@ -138,15 +138,22 @@ def DftGraph():
 def verify_dft_properties():
     print("Please select an integer k for the Kronecker Delta:")
     k = int(input())
+
     print("Please select a non-negative integer N")
     N = int(input())
+
+    print("Please select a magnitude for the constance sequence")
+    magnitude = int(input())
 
     kronecker_delta = sd.kronecker_delta(k, N)
     kd_freq = dft.dft_transform(kronecker_delta)
 
+    constance_sequence = sd.constance_sequence(magnitude, N)
+    cs_freq = dft.dft_transform(constance_sequence)
+
     x = list(range(N))
 
-    fig, ax1 = plt.subplots(1, 2)
+    fig, (ax1, ax2) = plt.subplots(2, 2)
     fig.subplots_adjust(left=0.05, right=0.95, top=0.90, bottom=0.1, wspace=0.5, hspace=0.75)
     fig.set_figheight(9)
     fig.set_figwidth(15)
@@ -160,5 +167,15 @@ def verify_dft_properties():
     ax1[1].set_xlabel('Sample')
     ax1[1].set_title('Kronecker Delta Freq')
     ax1[1].stem(x, kd_freq)
+
+    ax2[0].set_ylabel('Signal')
+    ax2[0].set_xlabel('Sample')
+    ax2[0].set_title('Kronecker Delta Signal')
+    ax2[0].stem(x, constance_sequence)
+
+    ax2[1].set_ylabel('Frequency')
+    ax2[1].set_xlabel('Sample')
+    ax2[1].set_title('Kronecker Delta Freq')
+    ax2[1].stem(x, cs_freq)
 
     plt.show()
