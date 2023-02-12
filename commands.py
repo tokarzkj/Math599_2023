@@ -1,11 +1,11 @@
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 from numpy import real, imag
 import signaldefinitions as sd
 import dft
 
 
-def DftGraph():
+def dft_graph():
     print("Please select an integer f:")
     f = int(input())
     print("Please select a non-negative integer N")
@@ -135,6 +135,7 @@ def DftGraph():
 
     plt.show()
 
+
 def verify_dft_properties():
     print("Please select an integer k for the Kronecker Delta:")
     k = int(input())
@@ -148,6 +149,9 @@ def verify_dft_properties():
     print("Please select an upper boundary M for the box signal (Must be less than N)")
     M = int(input())
 
+    print("Please select a shift z for the box signal")
+    z = int(input())
+
     kronecker_delta = sd.kronecker_delta(k, N)
     kd_freq = dft.dft_transform(kronecker_delta)
 
@@ -160,9 +164,12 @@ def verify_dft_properties():
     reversed_box_signal = sd.reverse_signal(box_signal)
     reversed_box_freq = dft.dft_transform(reversed_box_signal)
 
+    shifted_box_signal = np.roll(box_signal, z)
+    shifted_box_freq = dft.shifted_dft_transform(box_signal, z)
+
     x = list(range(N))
 
-    fig, (ax1, ax2, ax3, ax4) = plt.subplots(4, 3)
+    fig, (ax1, ax2, ax3, ax4, ax5) = plt.subplots(5, 3)
     fig.subplots_adjust(left=0.05, right=0.95, top=0.90, bottom=0.1, wspace=0.5, hspace=0.75)
     fig.set_figheight(9)
     fig.set_figwidth(15)
@@ -226,5 +233,20 @@ def verify_dft_properties():
     ax4[2].set_xlabel('Sample')
     ax4[2].set_title('Im(Reversed Box Freq)')
     ax4[2].stem(x, [imag(i) for i in reversed_box_freq])
+
+    ax5[0].set_ylabel('Signal')
+    ax5[0].set_xlabel('Sample')
+    ax5[0].set_title('Shifted Box Signal')
+    ax5[0].stem(x, shifted_box_signal)
+
+    ax5[1].set_ylabel('Frequency')
+    ax5[1].set_xlabel('Sample')
+    ax5[1].set_title('Real(Shifted Box Freq)')
+    ax5[1].stem(x, [real(r) for r in shifted_box_freq])
+
+    ax5[2].set_ylabel('Frequency')
+    ax5[2].set_xlabel('Sample')
+    ax5[2].set_title('Im(Shifted Box Freq)')
+    ax5[2].stem(x, [imag(i) for i in shifted_box_freq])
 
     plt.show()

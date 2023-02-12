@@ -22,6 +22,19 @@ def dft_transform(signal) -> np.array:
     return dft_samples
 
 
+def shifted_dft_transform(signal, z):
+    shifted_signal = np.roll(signal, z)
+    dft = dft_transform(shifted_signal)
+
+    i = complex(0, 1)
+    N = len(signal)
+    for k in range(0, N):
+        x_hat = dft[k]
+        dft[k] = np.exp((-2 * np.pi * i * z)/N) * x_hat
+
+    return dft
+
+
 def inverse_dft_transform(frequency) -> np.array:
     """
     Uses the inverse DFT summation technique to recover the signal from a frequency.

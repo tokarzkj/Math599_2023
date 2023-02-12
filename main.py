@@ -5,6 +5,6 @@ if __name__ == '__main__':
     command = input()
 
     if command == "dft graph":
-        commands.DftGraph()
+        commands.dft_graph()
     elif command == "verify properties":
         commands.verify_dft_properties()
