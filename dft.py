@@ -54,3 +54,15 @@ def inverse_dft_transform(frequency) -> np.array:
         signal_samples[k] = np.float64((1 / N) * frequency_summation)
 
     return signal_samples
+
+
+def modulated_signal(signal, l):
+    dft = dft_transform(signal)
+
+    i = complex(0, 1)
+    N = len(signal)
+    for k in range(0, N):
+        x_hat = dft[k]
+        dft[k] = np.exp((2 * np.pi * i * l * k) / N) * x_hat
+
+    return dft

@@ -137,20 +137,27 @@ def dft_graph():
 
 
 def verify_dft_properties():
-    print("Please select an integer k for the Kronecker Delta:")
-    k = int(input())
+    print("Select a subcommand: kronecker delta, box signal, modulated signal")
+    subcommand = input()
 
     print("Please select a non-negative integer N")
     N = int(input())
+    x = list(range(N))
+
+    if subcommand == "kronecker delta":
+        kronecker_delta_properties(N, x)
+    elif subcommand == "box signal":
+        box_signal_properties(N, x)
+    elif subcommand == "modulated signal":
+        modulated_signal_properties(N, x)
+
+
+def kronecker_delta_properties(N, x):
+    print("Please select an integer k for the Kronecker Delta:")
+    k = int(input())
 
     print("Please select a magnitude for the constance sequence")
     magnitude = int(input())
-
-    print("Please select an upper boundary M for the box signal (Must be less than N)")
-    M = int(input())
-
-    print("Please select a shift z for the box signal")
-    z = int(input())
 
     kronecker_delta = sd.kronecker_delta(k, N)
     kd_freq = dft.dft_transform(kronecker_delta)
@@ -158,18 +165,7 @@ def verify_dft_properties():
     constance_sequence = sd.constance_sequence(magnitude, N)
     cs_freq = dft.dft_transform(constance_sequence)
 
-    box_signal = sd.box_signal_samples(N, M)
-    box_freq = dft.dft_transform(box_signal)
-
-    reversed_box_signal = sd.reverse_signal(box_signal)
-    reversed_box_freq = dft.dft_transform(reversed_box_signal)
-
-    shifted_box_signal = np.roll(box_signal, z)
-    shifted_box_freq = dft.shifted_dft_transform(box_signal, z)
-
-    x = list(range(N))
-
-    fig, (ax1, ax2, ax3, ax4, ax5) = plt.subplots(5, 3)
+    fig, (ax1, ax2) = plt.subplots(2, 3)
     fig.subplots_adjust(left=0.05, right=0.95, top=0.90, bottom=0.1, wspace=0.5, hspace=0.75)
     fig.set_figheight(9)
     fig.set_figwidth(15)
@@ -204,49 +200,106 @@ def verify_dft_properties():
     ax2[2].set_title('Im(Constance Sequence Freq)')
     ax2[2].stem(x, [imag(i) for i in cs_freq])
 
+    plt.show()
+
+
+def box_signal_properties(N, x):
+    print("Please select an upper boundary M for the box signal (Must be less than N)")
+    M = int(input())
+
+    print("Please select a shift z for the box signal")
+    z = int(input())
+
+    box_signal = sd.box_signal_samples(N, M)
+    box_freq = dft.dft_transform(box_signal)
+
+    reversed_box_signal = sd.reverse_signal(box_signal)
+    reversed_box_freq = dft.dft_transform(reversed_box_signal)
+
+    shifted_box_signal = np.roll(box_signal, z)
+    shifted_box_freq = dft.shifted_dft_transform(box_signal, z)
+
+    fig, (ax1, ax2, ax3) = plt.subplots(3, 3)
+    fig.subplots_adjust(left=0.05, right=0.95, top=0.90, bottom=0.1, wspace=0.5, hspace=0.75)
+    fig.set_figheight(9)
+    fig.set_figwidth(15)
+
+    ax1[0].set_ylabel('Signal')
+    ax1[0].set_xlabel('Sample')
+    ax1[0].set_title('Box Signal')
+    ax1[0].stem(x, box_signal)
+
+    ax1[1].set_ylabel('Frequency')
+    ax1[1].set_xlabel('Sample')
+    ax1[1].set_title('Real(Box Freq)')
+    ax1[1].stem(x, [real(r) for r in box_freq])
+
+    ax1[2].set_ylabel('Frequency')
+    ax1[2].set_xlabel('Sample')
+    ax1[2].set_title('Im(Box Freq)')
+    ax1[2].stem(x, [imag(i) for i in box_freq])
+
+    ax2[0].set_ylabel('Signal')
+    ax2[0].set_xlabel('Sample')
+    ax2[0].set_title('Reversed Box Signal')
+    ax2[0].stem(x, reversed_box_signal)
+
+    ax2[1].set_ylabel('Frequency')
+    ax2[1].set_xlabel('Sample')
+    ax2[1].set_title('Real(Reversed Box Freq)')
+    ax2[1].stem(x, [real(r) for r in reversed_box_freq])
+
+    ax2[2].set_ylabel('Frequency')
+    ax2[2].set_xlabel('Sample')
+    ax2[2].set_title('Im(Reversed Box Freq)')
+    ax2[2].stem(x, [imag(i) for i in reversed_box_freq])
+
     ax3[0].set_ylabel('Signal')
     ax3[0].set_xlabel('Sample')
-    ax3[0].set_title('Box Signal')
-    ax3[0].stem(x, box_signal)
+    ax3[0].set_title('Shifted Box Signal')
+    ax3[0].stem(x, shifted_box_signal)
 
     ax3[1].set_ylabel('Frequency')
     ax3[1].set_xlabel('Sample')
-    ax3[1].set_title('Real(Box Freq)')
-    ax3[1].stem(x, [real(r) for r in box_freq])
+    ax3[1].set_title('Real(Shifted Box Freq)')
+    ax3[1].stem(x, [real(r) for r in shifted_box_freq])
 
     ax3[2].set_ylabel('Frequency')
     ax3[2].set_xlabel('Sample')
-    ax3[2].set_title('Im(Box Freq)')
-    ax3[2].stem(x, [imag(i) for i in box_freq])
+    ax3[2].set_title('Im(Shifted Box Freq)')
+    ax3[2].stem(x, [imag(i) for i in shifted_box_freq])
 
-    ax4[0].set_ylabel('Signal')
-    ax4[0].set_xlabel('Sample')
-    ax4[0].set_title('Reversed Box Signal')
-    ax4[0].stem(x, reversed_box_signal)
+    plt.show()
 
-    ax4[1].set_ylabel('Frequency')
-    ax4[1].set_xlabel('Sample')
-    ax4[1].set_title('Real(Reversed Box Freq)')
-    ax4[1].stem(x, [real(r) for r in reversed_box_freq])
 
-    ax4[2].set_ylabel('Frequency')
-    ax4[2].set_xlabel('Sample')
-    ax4[2].set_title('Im(Reversed Box Freq)')
-    ax4[2].stem(x, [imag(i) for i in reversed_box_freq])
+def modulated_signal_properties(N, x):
+    print("Please select an upper boundary M for the box signal (Must be less than N)")
+    M = int(input())
 
-    ax5[0].set_ylabel('Signal')
-    ax5[0].set_xlabel('Sample')
-    ax5[0].set_title('Shifted Box Signal')
-    ax5[0].stem(x, shifted_box_signal)
+    print("Please select a modulation l for the box signal")
+    l = int(input())
 
-    ax5[1].set_ylabel('Frequency')
-    ax5[1].set_xlabel('Sample')
-    ax5[1].set_title('Real(Shifted Box Freq)')
-    ax5[1].stem(x, [real(r) for r in shifted_box_freq])
+    box_signal = sd.box_signal_samples(N, M)
+    modulated_freq = dft.modulated_signal(box_signal, l)
 
-    ax5[2].set_ylabel('Frequency')
-    ax5[2].set_xlabel('Sample')
-    ax5[2].set_title('Im(Shifted Box Freq)')
-    ax5[2].stem(x, [imag(i) for i in shifted_box_freq])
+    fig, (ax1) = plt.subplots(1, 3)
+    fig.subplots_adjust(left=0.05, right=0.95, top=0.90, bottom=0.1, wspace=0.5, hspace=0.75)
+    fig.set_figheight(5)
+    fig.set_figwidth(11)
+
+    ax1[0].set_ylabel('Signal')
+    ax1[0].set_xlabel('Sample')
+    ax1[0].set_title('Shifted Box Signal')
+    ax1[0].stem(x, box_signal)
+
+    ax1[1].set_ylabel('Frequency')
+    ax1[1].set_xlabel('Sample')
+    ax1[1].set_title('Real(Modulated Box Freq)')
+    ax1[1].stem(x, [real(r) for r in modulated_freq])
+
+    ax1[2].set_ylabel('Frequency')
+    ax1[2].set_xlabel('Sample')
+    ax1[2].set_title('Im(Modulated Box Freq)')
+    ax1[2].stem(x, [imag(i) for i in modulated_freq])
 
     plt.show()
