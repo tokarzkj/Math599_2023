@@ -1,4 +1,5 @@
 import numpy as np
+import math
 
 
 def dft_transform(signal) -> np.array:
@@ -66,3 +67,24 @@ def modulated_signal(signal, l):
         dft[k] = np.exp((2 * np.pi * i * l * k) / N) * x_hat
 
     return dft
+
+
+def reverse_signal(signal):
+    N = len(signal)
+    new_signal = list(signal)
+
+    midpoint = math.ceil(N/2)
+    if N > 0:
+        for n in range(1, midpoint):
+            tmp = new_signal[n]
+            new_signal[n] = signal[N - n]
+            new_signal[N - n] = tmp
+
+    return new_signal
+
+
+def reversed_signal_dft(signal):
+    reversed_signal = reverse_signal(signal)
+    reversed_dft = dft_transform(reversed_signal)
+
+    return reversed_dft

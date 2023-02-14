@@ -1,5 +1,4 @@
 import numpy as np
-import math
 
 def cosine_samples(f, N) -> np.array:
     """
@@ -62,17 +61,3 @@ def kronecker_delta(k, N):
 
 def constance_sequence(magnitude, N):
     return np.full(N, magnitude)
-
-
-def reverse_signal(signal):
-    N = len(signal)
-    new_signal = list(signal)
-
-    midpoint = math.ceil(N/2)
-    if N > 0:
-        for n in range(1, midpoint):
-            tmp = new_signal[n]
-            new_signal[n] = signal[N - n]
-            new_signal[N - n] = tmp
-
-    return new_signal

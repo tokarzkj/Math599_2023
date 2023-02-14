@@ -137,7 +137,7 @@ def dft_graph():
 
 
 def verify_dft_properties():
-    print("Select a subcommand: kronecker delta, box signal, modulated signal")
+    print("Select a subcommand: kronecker delta, box signal, modulated signal, or reverse signal")
     subcommand = input()
 
     print("Please select a non-negative integer N")
@@ -150,6 +150,8 @@ def verify_dft_properties():
         box_signal_properties(N, x)
     elif subcommand == "modulated signal":
         modulated_signal_properties(N, x)
+    elif subcommand == "reverse signal":
+        reversed_signal_properties(N, x)
 
 
 def kronecker_delta_properties(N, x):
@@ -301,5 +303,52 @@ def modulated_signal_properties(N, x):
     ax1[2].set_xlabel('Sample')
     ax1[2].set_title('Im(Modulated Box Freq)')
     ax1[2].stem(x, [imag(i) for i in modulated_freq])
+
+    plt.show()
+
+def reversed_signal_properties(N, x):
+    print("Please select an integer f:")
+    f = int(input())
+
+    sin_signal = sd.sin_samples(f, N)
+    sin_frequency = dft.dft_transform(sin_signal)
+
+    reverse_sin_signal = dft.reverse_signal(sin_signal)
+    reverse_dft = dft.reversed_signal_dft(sin_signal)
+
+    fig, (ax1, ax2) = plt.subplots(2, 3)
+    fig.subplots_adjust(left=0.05, right=0.95, top=0.90, bottom=0.1, wspace=0.5, hspace=0.75)
+    fig.set_figheight(9)
+    fig.set_figwidth(11)
+
+    ax1[0].set_ylabel('Signal')
+    ax1[0].set_xlabel('Sample')
+    ax1[0].set_title('Sin Signal')
+    ax1[0].stem(x, sin_signal)
+
+    ax1[1].set_ylabel('Frequency')
+    ax1[1].set_xlabel('Sample')
+    ax1[1].set_title('Real Sin Frequency')
+    ax1[1].stem(x, [real(r) for r in sin_frequency])
+
+    ax1[2].set_ylabel('Frequency')
+    ax1[2].set_xlabel('Sample')
+    ax1[2].set_title('Imaginary Sin Frequency')
+    ax1[2].stem(x, [imag(i) for i in sin_frequency])
+
+    ax2[0].set_ylabel('Signal')
+    ax2[0].set_xlabel('Sample')
+    ax2[0].set_title('Reverse Sin Signal')
+    ax2[0].stem(x, reverse_sin_signal)
+
+    ax2[1].set_ylabel('Frequency')
+    ax2[1].set_xlabel('Sample')
+    ax2[1].set_title('Real(Reverse Sin Frequency)')
+    ax2[1].stem(x, [real(r) for r in reverse_dft])
+
+    ax2[2].set_ylabel('Frequency')
+    ax2[2].set_xlabel('Sample')
+    ax2[2].set_title('Im(Reverse Sin Frequency)')
+    ax2[2].stem(x, [imag(i) for i in reverse_dft])
 
     plt.show()
