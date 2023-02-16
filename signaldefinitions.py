@@ -7,7 +7,7 @@ def cosine_samples(f, N) -> np.array:
     :param N: A non-zero integer representing how many samples to take
     :return: N length vector containing samples of a cosine signal
     """
-    signal_vector_results = np.empty((N, 1))
+    signal_vector_results = np.empty(N)
     for n in range(0, N):
         signal_vector_results[n] = np.cos((2 * np.pi * f * n) / N)
 
@@ -21,7 +21,7 @@ def sin_samples(f, N) -> np.array:
     :param N: A non-zero integer representing how many samples to take
     :return: N length vector containing samples of a sin signal
     """
-    signal_vector_results = np.empty((N, 1))
+    signal_vector_results = np.empty(N)
     for n in range(0, N):
         signal_vector_results[n] = np.sin((2 * np.pi * f * n) / N)
 
@@ -46,7 +46,7 @@ def imaginary_sample(f, N) -> np.array:
     :param N: A non-zero integer representing how many samples to take
     :return: N length vector containing samples of a cosine signal
     """
-    signal_vector_results = np.empty((N, 1))
+    signal_vector_results = np.empty(N)
     for n in range(0, N):
         signal_vector_results[n] = np.exp((2 * np.pi * f * n))
 

@@ -11,7 +11,7 @@ def dft_transform(signal) -> np.array:
     i = complex(0, 1)
     N = len(signal)
 
-    dft_samples = np.empty((N, 1), dtype=np.complex_)
+    dft_samples = np.empty(N, dtype=np.complex_)
 
     for n in range(0, N):
         sample_summation = np.float64(0)
@@ -45,7 +45,7 @@ def inverse_dft_transform(frequency) -> np.array:
     """
     i = complex(0, 1)
     N = len(frequency)
-    signal_samples = np.empty((N, 1), dtype=np.float_)
+    signal_samples = np.empty(N, dtype=np.float_)
 
     for k in range(0, N):
         frequency_summation = np.float64(0)
@@ -84,7 +84,9 @@ def reverse_signal(signal):
 
 
 def reversed_signal_dft(signal):
-    reversed_signal = reverse_signal(signal)
+    first_element = signal[0]
+    reversed_signal = np.flip(signal[1:])
+    reversed_signal = np.insert(reversed_signal, 0, first_element)
     reversed_dft = dft_transform(reversed_signal)
 
     return reversed_dft
