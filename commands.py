@@ -313,10 +313,11 @@ def reversed_signal_properties(N, x):
     sin_signal = sd.sin_samples(f, N)
     sin_frequency = dft.dft_transform(sin_signal)
 
-    reverse_sin_signal = dft.reverse_signal(sin_signal)
-    reverse_dft = dft.reversed_signal_dft(sin_signal)
+    reverse_sin_signal = dft.time_reverse_array(sin_signal)
+    reverse_signal_dft = dft.reversed_signal_dft(sin_signal)
+    reversed_dft = dft.reverse_dft(sin_signal)
 
-    fig, (ax1, ax2) = plt.subplots(2, 3)
+    fig, (ax1, ax2, ax3) = plt.subplots(3, 3)
     fig.subplots_adjust(left=0.05, right=0.95, top=0.90, bottom=0.1, wspace=0.5, hspace=0.75)
     fig.set_figheight(9)
     fig.set_figwidth(11)
@@ -344,11 +345,26 @@ def reversed_signal_properties(N, x):
     ax2[1].set_ylabel('Frequency')
     ax2[1].set_xlabel('Sample')
     ax2[1].set_title('Real(Reverse Sin Frequency)')
-    ax2[1].stem(x, [real(r) for r in reverse_dft])
+    ax2[1].stem(x, [real(r) for r in reverse_signal_dft])
 
     ax2[2].set_ylabel('Frequency')
     ax2[2].set_xlabel('Sample')
     ax2[2].set_title('Im(Reverse Sin Frequency)')
-    ax2[2].stem(x, [imag(i) for i in reverse_dft])
+    ax2[2].stem(x, [imag(i) for i in reverse_signal_dft])
+
+    ax3[0].set_ylabel('Signal')
+    ax3[0].set_xlabel('Sample')
+    ax3[0].set_title('Reverse Sin Signal')
+    ax3[0].stem(x, reverse_sin_signal)
+
+    ax3[1].set_ylabel('Frequency')
+    ax3[1].set_xlabel('Sample')
+    ax3[1].set_title('Real(Sin Frequency Reversed)')
+    ax3[1].stem(x, [real(r) for r in reversed_dft])
+
+    ax3[2].set_ylabel('Frequency')
+    ax3[2].set_xlabel('Sample')
+    ax3[2].set_title('Im(Sin Frequency Reversed)')
+    ax3[2].stem(x, [imag(i) for i in reversed_dft])
 
     plt.show()

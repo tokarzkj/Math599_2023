@@ -69,24 +69,19 @@ def modulated_signal(signal, l):
     return dft
 
 
-def reverse_signal(signal):
-    N = len(signal)
-    new_signal = list(signal)
-
-    midpoint = math.ceil(N/2)
-    if N > 0:
-        for n in range(1, midpoint):
-            tmp = new_signal[n]
-            new_signal[n] = signal[N - n]
-            new_signal[N - n] = tmp
-
-    return new_signal
+def time_reverse_array(signal):
+    first_element = signal[0]
+    reversed_signal = np.flip(signal[1:])
+    return np.insert(reversed_signal, 0, first_element)
 
 
 def reversed_signal_dft(signal):
-    first_element = signal[0]
-    reversed_signal = np.flip(signal[1:])
-    reversed_signal = np.insert(reversed_signal, 0, first_element)
+    reversed_signal = time_reverse_array(signal)
     reversed_dft = dft_transform(reversed_signal)
 
     return reversed_dft
+
+
+def reverse_dft(signal):
+    dft = dft_transform(signal)
+    return time_reverse_array(dft)
