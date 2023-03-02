@@ -58,15 +58,19 @@ def inverse_dft_transform(frequency) -> np.array:
 
 
 def modulated_signal(signal, l):
-    dft = dft_transform(signal)
-
     i = complex(0, 1)
     N = len(signal)
-    for k in range(0, N):
-        x_hat = dft[k]
-        dft[k] = np.exp((2 * np.pi * i * l * k) / N) * x_hat
 
-    return dft
+    dft_samples = np.empty(N, dtype=np.complex_)
+
+    for n in range(0, N):
+        sample_summation = np.float64(0)
+        for k in range(0, N):
+            signal_sample = signal[k]
+            sample_summation += np.exp((2 * np.pi * i * l * k) / N) * signal_sample * np.exp((-2 * np.pi * i * k * n) / N)
+        dft_samples[n] = sample_summation
+
+    return dft_samples
 
 
 def time_reverse_array(signal):
