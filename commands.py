@@ -215,7 +215,7 @@ def box_signal_properties(N, x):
     box_signal = sd.box_signal_samples(N, M)
     box_freq = dft.dft_transform(box_signal)
 
-    reversed_box_signal = sd.reverse_signal(box_signal)
+    reversed_box_signal = dft.time_reverse_array(box_signal)
     reversed_box_freq = dft.dft_transform(reversed_box_signal)
 
     shifted_box_signal = np.roll(box_signal, z)
