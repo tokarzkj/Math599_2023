@@ -54,6 +54,35 @@ def shifted_convoluted_dft(sig, sig_shift, mask, shift):
 
     return shifted_dft
 
+
+def modulated_signal(sig, mod):
+    i = complex(0, 1)
+    N = len(sig)
+    mod_signal = np.empty(N)
+
+    for n in range(0, N):
+        signal_sample = sig[n]
+        mod_signal[n] = np.exp((2 * np.pi * i * mod * n) / N) * signal_sample
+    return mod_signal
+
+
+def modulated_convolution_signal(sig, mask, shift, mod):
+    i = complex(0, 1)
+    N = len(sig)
+
+    dft_samples = np.empty(N, dtype=np.complex_)
+
+    shifted_mask = np.roll(mask, shift)
+    for n in range(0, N):
+        sample_summation = np.float64(0)
+        for k in range(0, N):
+            signal_sample = sig[k]
+            mask_sample = shifted_mask[k]
+            sample_summation += np.exp((2 * np.pi * i * mod * k) / N) * signal_sample * mask_sample * np.exp((-2 * np.pi * i * k * n) / N)
+        dft_samples[n] = sample_summation
+
+    return dft_samples
+
 def prove_convolution_dft(sig, mask, shift):
     signal_dft = dft.dft_transform(sig)
     mask_dft = dft.dft_transform(np.roll(mask, shift))
@@ -82,11 +111,9 @@ def convolution_command():
     mask = signal.windows.gaussian(N, sigma)
     convoluted_dft = convolution_dft(sin_signal, mask, l)
     component_multiplication_dft = prove_convolution_dft(sin_signal, mask, l)
-    idft = inverse_convolution_dft(convoluted_dft, mask, l)
-
     x = list(range(N))
 
-    graph_convolution(x, component_multiplication_dft, convoluted_dft, l, mask, sin_signal, idft)
+    graph_convolution(x, component_multiplication_dft, convoluted_dft, l, mask, sin_signal)
 
     print("Would you like to display a property? Select Shift, Reverse")
     subcommand = input()
@@ -98,6 +125,10 @@ def convolution_command():
         graph_convolution_shift(x, sin_signal, mask, convoluted_dft, l, sig_shift)
     elif subcommand == "Reverse":
         graph_reverse_signal(sin_signal, mask, l, convoluted_dft, x)
+    elif subcommand == "Modulated":
+        print("Please select a modulation value")
+        mod = int(input())
+        graph_modulated_signal(x, sin_signal, mask, l, mod, convoluted_dft)
 
     plt.show()
 
@@ -154,7 +185,9 @@ def graph_reverse_signal(sin_signal, mask, shift, convoluted_dft, x):
     ax4[1].stem(x, [imag(i) for i in reversed_signal_dft])
 
 
-def graph_convolution(x, component_multiplication_dft, convoluted_dft, shift, mask, sin_signal, idft):
+def graph_convolution(x, component_multiplication_dft, convoluted_dft, shift, mask, sin_signal):
+    idft = inverse_convolution_dft(convoluted_dft, mask, shift)
+
     fig, (ax1, ax2, ax3, ax4, ax5) = plt.subplots(5, 2)
     fig.suptitle("Measurement Convolution Setup")
     fig.subplots_adjust(left=0.05, right=0.95, top=0.90, bottom=0.1, wspace=0.5, hspace=0.75)
@@ -238,3 +271,51 @@ def graph_convolution_shift(x, sin_signal, mask, convoluted_dft, shift, sig_shif
     ax3[1].set_xlabel('Sample')
     ax3[1].set_title('Im(Shifted Signal DFT)')
     ax3[1].stem(x, [imag(i) for i in shifted_dft])
+
+
+def graph_modulated_signal(x, sin_signal, mask, shift, mod, convoluted_dft):
+    mod_dft = modulated_convolution_signal(sin_signal, mask, shift, mod)
+    mod_signal = modulated_signal(sin_signal, mod)
+
+    fig, (ax1, ax2, ax3, ax4) = plt.subplots(4, 2)
+    fig.suptitle("Modulated Property")
+    fig.subplots_adjust(left=0.05, right=0.95, top=0.90, bottom=0.1, wspace=0.5, hspace=0.75)
+    fig.set_figheight(9)
+    fig.set_figwidth(11)
+
+    ax1[0].set_ylabel('Amplitude')
+    ax1[0].set_xlabel('Sample')
+    ax1[0].set_title('Sin Signal')
+    ax1[0].stem(x, sin_signal)
+    ax1[1].set_ylabel('Amplitude')
+    ax1[1].set_xlabel('Sample')
+    ax1[1].set_title('Modulated Signal')
+    ax1[1].stem(x, mod_signal)
+
+    ax2[0].set_ylabel('Amplitude')
+    ax2[0].set_xlabel('Sample')
+    ax2[0].set_title('Mask Signal')
+    ax2[0].stem(x, mask)
+    ax2[1].set_ylabel('Amplitude')
+    ax2[1].set_xlabel('Sample')
+    ax2[1].set_title('Shifted Mask Signal')
+    ax2[1].stem(x, numpy.roll(mask, shift))
+
+    ax3[0].set_ylabel('Magnitude')
+    ax3[0].set_xlabel('Sample')
+    ax3[0].set_title('Re(DFT)')
+    ax3[0].stem(x, [real(r) for r in convoluted_dft])
+    ax3[1].set_ylabel('Magnitude')
+    ax3[1].set_xlabel('Sample')
+    ax3[1].set_title('Im(DFT)')
+    ax3[1].stem(x, [imag(i) for i in convoluted_dft])
+
+    ax4[0].set_ylabel('Magnitude')
+    ax4[0].set_xlabel('Sample')
+    ax4[0].set_title('Re(Mod Signal DFT)')
+    ax4[0].stem(x, [real(r) for r in mod_dft])
+    ax4[1].set_ylabel('Magnitude')
+    ax4[1].set_xlabel('Sample')
+    ax4[1].set_title('Im(Mod Signal DFT)')
+    ax4[1].stem(x, [imag(i) for i in mod_dft])
+
