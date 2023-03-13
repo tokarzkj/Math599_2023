@@ -3,9 +3,19 @@ import numpy as np
 from numpy import real, imag
 from scipy import signal
 import matplotlib.pyplot as plt
-
 import dft
 import signaldefinitions as sd
+
+
+def signal_mask_combined(sig, mask, shift):
+    N = len(sig)
+    shifted_mask = np.roll(mask, shift)
+    mixed_signal = np.empty(N)
+
+    for n in range(0, N):
+        mixed_signal[n] = sig[n] * shifted_mask[n]
+
+    return mixed_signal
 
 
 def convolution_dft(sig, mask, shift):
@@ -26,12 +36,11 @@ def convolution_dft(sig, mask, shift):
     return dft_samples
 
 
-def inverse_convolution_dft(dft, mask, shift):
+def inverse_convolution_dft(dft):
     i = complex(0, 1)
     N = len(dft)
 
     signal_samples = np.empty(N)
-    shifted_mask = np.roll(mask, shift)
 
     for n in range(0, N):
         sample_summation = np.float64(0)
@@ -41,47 +50,6 @@ def inverse_convolution_dft(dft, mask, shift):
         signal_samples[n] = np.float64((1/N) * sample_summation)
     return signal_samples
 
-
-def shifted_convoluted_dft(sig, sig_shift, mask, shift):
-    shifted_signal = np.roll(sig, sig_shift)
-    shifted_dft = convolution_dft(shifted_signal, mask, shift)
-
-    i = complex(0, 1)
-    N = len(sig)
-    for k in range(0, N):
-        x_hat = shifted_dft[k]
-        shifted_dft[k] = np.exp((-2 * np.pi * i * sig_shift) / N) * x_hat
-
-    return shifted_dft
-
-
-def modulated_signal(sig, mod):
-    i = complex(0, 1)
-    N = len(sig)
-    mod_signal = np.empty(N)
-
-    for n in range(0, N):
-        signal_sample = sig[n]
-        mod_signal[n] = np.exp((2 * np.pi * i * mod * n) / N) * signal_sample
-    return mod_signal
-
-
-def modulated_convolution_signal(sig, mask, shift, mod):
-    i = complex(0, 1)
-    N = len(sig)
-
-    dft_samples = np.empty(N, dtype=np.complex_)
-
-    shifted_mask = np.roll(mask, shift)
-    for n in range(0, N):
-        sample_summation = np.float64(0)
-        for k in range(0, N):
-            signal_sample = sig[k]
-            mask_sample = shifted_mask[k]
-            sample_summation += np.exp((2 * np.pi * i * mod * k) / N) * signal_sample * mask_sample * np.exp((-2 * np.pi * i * k * n) / N)
-        dft_samples[n] = sample_summation
-
-    return dft_samples
 
 def prove_convolution_dft(sig, mask, shift):
     signal_dft = dft.dft_transform(sig)
@@ -93,6 +61,7 @@ def prove_convolution_dft(sig, mask, shift):
         dft_samples[i] = signal_dft[i] * mask_dft[i]
 
     return dft_samples
+
 
 def convolution_command():
     print("Please select a non-negative integer N")
@@ -114,22 +83,6 @@ def convolution_command():
     x = list(range(N))
 
     graph_convolution(x, component_multiplication_dft, convoluted_dft, l, mask, sin_signal)
-
-    print("Would you like to display a property? Select Shift, Reverse")
-    subcommand = input()
-
-    if subcommand == "Shift":
-        print("Please select a shift for a shifted signal")
-        sig_shift = int(input())
-
-        graph_convolution_shift(x, sin_signal, mask, convoluted_dft, l, sig_shift)
-    elif subcommand == "Reverse":
-        graph_reverse_signal(sin_signal, mask, l, convoluted_dft, x)
-    elif subcommand == "Modulated":
-        print("Please select a modulation value")
-        mod = int(input())
-        graph_modulated_signal(x, sin_signal, mask, l, mod, convoluted_dft)
-
     plt.show()
 
 
@@ -186,7 +139,7 @@ def graph_reverse_signal(sin_signal, mask, shift, convoluted_dft, x):
 
 
 def graph_convolution(x, component_multiplication_dft, convoluted_dft, shift, mask, sin_signal):
-    idft = inverse_convolution_dft(convoluted_dft, mask, shift)
+    idft = inverse_convolution_dft(convoluted_dft)
 
     fig, (ax1, ax2, ax3, ax4, ax5) = plt.subplots(5, 2)
     fig.suptitle("Measurement Convolution Setup")
@@ -230,92 +183,3 @@ def graph_convolution(x, component_multiplication_dft, convoluted_dft, shift, ma
     ax5[0].set_xlabel('Sample')
     ax5[0].set_title('IDFT Sin Signal')
     ax5[0].stem(x, idft)
-
-
-def graph_convolution_shift(x, sin_signal, mask, convoluted_dft, shift, sig_shift):
-    fig, (ax1, ax2, ax3) = plt.subplots(3, 2)
-    fig.suptitle("Shifted Signal Property")
-    fig.subplots_adjust(left=0.05, right=0.95, top=0.90, bottom=0.1, wspace=0.5, hspace=0.75)
-    fig.set_figheight(9)
-    fig.set_figwidth(11)
-
-    shifted_signal = np.roll(sin_signal, sig_shift)
-    shifted_dft = shifted_convoluted_dft(sin_signal, sig_shift, mask, shift)
-
-    ax1[0].set_ylabel('Amplitude')
-    ax1[0].set_xlabel('Sample')
-    ax1[0].set_title('Signal')
-    ax1[0].stem(x, sin_signal)
-
-    ax1[1].set_ylabel('Amplitude')
-    ax1[1].set_xlabel('Sample')
-    ax1[1].set_title('Shifted Signal')
-    ax1[1].stem(x, shifted_signal)
-
-    ax2[0].set_ylabel('Magnitude')
-    ax2[0].set_xlabel('Sample')
-    ax2[0].set_title('Re(Shifted DFT)')
-    ax2[0].stem(x, [real(r) for r in convoluted_dft])
-
-    ax2[1].set_ylabel('Magnitude')
-    ax2[1].set_xlabel('Sample')
-    ax2[1].set_title('Im(Shifted DFT)')
-    ax2[1].stem(x, [imag(i) for i in convoluted_dft])
-
-    ax3[0].set_ylabel('Magnitude')
-    ax3[0].set_xlabel('Sample')
-    ax3[0].set_title('Re(Shifted Signal DFT)')
-    ax3[0].stem(x, [real(r) for r in shifted_dft])
-
-    ax3[1].set_ylabel('Magnitude')
-    ax3[1].set_xlabel('Sample')
-    ax3[1].set_title('Im(Shifted Signal DFT)')
-    ax3[1].stem(x, [imag(i) for i in shifted_dft])
-
-
-def graph_modulated_signal(x, sin_signal, mask, shift, mod, convoluted_dft):
-    mod_dft = modulated_convolution_signal(sin_signal, mask, shift, mod)
-    mod_signal = modulated_signal(sin_signal, mod)
-
-    fig, (ax1, ax2, ax3, ax4) = plt.subplots(4, 2)
-    fig.suptitle("Modulated Property")
-    fig.subplots_adjust(left=0.05, right=0.95, top=0.90, bottom=0.1, wspace=0.5, hspace=0.75)
-    fig.set_figheight(9)
-    fig.set_figwidth(11)
-
-    ax1[0].set_ylabel('Amplitude')
-    ax1[0].set_xlabel('Sample')
-    ax1[0].set_title('Sin Signal')
-    ax1[0].stem(x, sin_signal)
-    ax1[1].set_ylabel('Amplitude')
-    ax1[1].set_xlabel('Sample')
-    ax1[1].set_title('Modulated Signal')
-    ax1[1].stem(x, mod_signal)
-
-    ax2[0].set_ylabel('Amplitude')
-    ax2[0].set_xlabel('Sample')
-    ax2[0].set_title('Mask Signal')
-    ax2[0].stem(x, mask)
-    ax2[1].set_ylabel('Amplitude')
-    ax2[1].set_xlabel('Sample')
-    ax2[1].set_title('Shifted Mask Signal')
-    ax2[1].stem(x, numpy.roll(mask, shift))
-
-    ax3[0].set_ylabel('Magnitude')
-    ax3[0].set_xlabel('Sample')
-    ax3[0].set_title('Re(DFT)')
-    ax3[0].stem(x, [real(r) for r in convoluted_dft])
-    ax3[1].set_ylabel('Magnitude')
-    ax3[1].set_xlabel('Sample')
-    ax3[1].set_title('Im(DFT)')
-    ax3[1].stem(x, [imag(i) for i in convoluted_dft])
-
-    ax4[0].set_ylabel('Magnitude')
-    ax4[0].set_xlabel('Sample')
-    ax4[0].set_title('Re(Mod Signal DFT)')
-    ax4[0].stem(x, [real(r) for r in mod_dft])
-    ax4[1].set_ylabel('Magnitude')
-    ax4[1].set_xlabel('Sample')
-    ax4[1].set_title('Im(Mod Signal DFT)')
-    ax4[1].stem(x, [imag(i) for i in mod_dft])
-
