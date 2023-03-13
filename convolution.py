@@ -86,59 +86,8 @@ def convolution_command():
     plt.show()
 
 
-def graph_reverse_signal(sin_signal, mask, shift, convoluted_dft, x):
-    reversed_signal = dft.time_reverse_array(sin_signal)
-    reversed_signal_dft = convolution_dft(reversed_signal, mask, shift)
-    reversed_convoluted_dft = dft.time_reverse_array(convoluted_dft)
-
-    fig, (ax1, ax2, ax3, ax4) = plt.subplots(4, 2)
-    fig.suptitle("Reversal Property")
-    fig.subplots_adjust(left=0.05, right=0.95, top=0.90, bottom=0.1, wspace=0.5, hspace=0.75)
-    fig.set_figheight(9)
-    fig.set_figwidth(11)
-
-    ax1[0].set_ylabel('Magnitude')
-    ax1[0].set_xlabel('Sample')
-    ax1[0].set_title('Signal')
-    ax1[0].stem(x, sin_signal)
-
-    ax1[1].set_ylabel('Magnitude')
-    ax1[1].set_xlabel('Sample')
-    ax1[1].set_title('Reversed Signal')
-    ax1[1].stem(x, reversed_signal)
-
-    ax2[0].set_ylabel('Magnitude')
-    ax2[0].set_xlabel('Sample')
-    ax2[0].set_title('Re(DFT)')
-    ax2[0].stem(x, [real(r) for r in convoluted_dft])
-
-    ax2[1].set_ylabel('Magnitude')
-    ax2[1].set_xlabel('Sample')
-    ax2[1].set_title('Im(DFT)')
-    ax2[1].stem(x, [imag(i) for i in convoluted_dft])
-
-    ax3[0].set_ylabel('Magnitude')
-    ax3[0].set_xlabel('Sample')
-    ax3[0].set_title('Re(Reversed DFT)')
-    ax3[0].stem(x, [real(r) for r in reversed_convoluted_dft])
-
-    ax3[1].set_ylabel('Magnitude')
-    ax3[1].set_xlabel('Sample')
-    ax3[1].set_title('Im(Reversed DFT)')
-    ax3[1].stem(x, [imag(i) for i in reversed_convoluted_dft])
-
-    ax4[0].set_ylabel('Magnitude')
-    ax4[0].set_xlabel('Sample')
-    ax4[0].set_title('Re(Reversed Signal DFT)')
-    ax4[0].stem(x, [real(r) for r in reversed_signal_dft])
-
-    ax4[1].set_ylabel('Magnitude')
-    ax4[1].set_xlabel('Sample')
-    ax4[1].set_title('Im(Reversed Signal DFT)')
-    ax4[1].stem(x, [imag(i) for i in reversed_signal_dft])
-
-
 def graph_convolution(x, component_multiplication_dft, convoluted_dft, shift, mask, sin_signal):
+    combined_signal = signal_mask_combined(sin_signal, mask, shift)
     idft = inverse_convolution_dft(convoluted_dft)
 
     fig, (ax1, ax2, ax3, ax4, ax5) = plt.subplots(5, 2)
@@ -181,5 +130,9 @@ def graph_convolution(x, component_multiplication_dft, convoluted_dft, shift, ma
 
     ax5[0].set_ylabel('Amplitude')
     ax5[0].set_xlabel('Sample')
-    ax5[0].set_title('IDFT Sin Signal')
-    ax5[0].stem(x, idft)
+    ax5[0].set_title('Combined Signal')
+    ax5[0].stem(x, combined_signal)
+    ax5[1].set_ylabel('Amplitude')
+    ax5[1].set_xlabel('Sample')
+    ax5[1].set_title('IDFT Sin Signal')
+    ax5[1].stem(x, idft)
